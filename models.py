@@ -72,9 +72,4 @@ class PurchasedSubscription(Model):
     client: fields.ForeignKeyRelation[Profile] = fields.ForeignKeyField('models.Profile')
 
 
-async def run():
-    await Tortoise.init(config=settings.TORTOISE_ORM)
-    await Tortoise.generate_schemas()
-
-if __name__ == '__main__':
-    run_async(run())
+Tortoise.init_models(['models'], 'models')
