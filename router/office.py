@@ -7,7 +7,6 @@ import models
 from schema import Office_Pydantic, Office_Raw_Pydantic
 from models import Office
 
-
 router = APIRouter(
     tags=['API Office']
 )
@@ -17,6 +16,12 @@ router = APIRouter(
 async def office_all():
     get_all_office = Office.all()
     return await Office_Pydantic.from_queryset(get_all_office)
+
+
+@router.get('/office/{uid:uuid}', response_model=Office_Pydantic)
+async def get_one_office(uid: uuid.UUID):
+    get_office = await models.Office.get(uid=uid)
+    return await Office_Pydantic.from_tortoise_orm(get_office)
 
 
 @router.post('/office', response_model=Office_Raw_Pydantic)
@@ -35,8 +40,8 @@ async def update_office(uid: uuid.UUID, office: Office_Raw_Pydantic):
     return await Office_Raw_Pydantic.from_tortoise_orm(get_office)
 
 
-@router.get('/office/{uid:uuid}', response_model=Office_Pydantic)
-async def get_one_office(uid: uuid.UUID):
+@router.delete('/office/{uid:uuid}')
+async def del_office(uid: uuid.UUID):
     get_office = await models.Office.get(uid=uid)
-    return await Office_Pydantic.from_tortoise_orm(get_office)
-
+    await get_office.delete()
+    return {'msg': "Office delete successful"}
