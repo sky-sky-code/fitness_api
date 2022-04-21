@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi import APIRouter
-from schema import Subscription_Without_Purchased_Pydantic, Subscription_Raw
+from schema import Subscription_Without_Purchased_Pydantic, Subscription_Raw_Pydantic
 import models
 from typing import List
 
@@ -22,18 +22,18 @@ async def get_one_subscription(uid: uuid.UUID):
     return await Subscription_Without_Purchased_Pydantic.from_tortoise_orm(get_sub)
 
 
-@router.post('/subscription', response_model=Subscription_Raw)
-async def create_subscription(subscription: Subscription_Raw):
+@router.post('/subscription', response_model=Subscription_Raw_Pydantic)
+async def create_subscription(subscription: Subscription_Raw_Pydantic):
     create_sub = await models.Subscription.create(**subscription.dict())
-    return await Subscription_Raw.from_tortoise_orm(create_sub)
+    return await Subscription_Raw_Pydantic.from_tortoise_orm(create_sub)
 
 
-@router.put('/subscription/{uid:uuid}', response_model=Subscription_Raw)
-async def update_subscription(uid: uuid.UUID, subscription: Subscription_Raw):
+@router.put('/subscription/{uid:uuid}', response_model=Subscription_Raw_Pydantic)
+async def update_subscription(uid: uuid.UUID, subscription: Subscription_Raw_Pydantic):
     get_sub = await models.Subscription.get(uid=uid)
     update_sub = await get_sub.update_from_dict(data=subscription.dict())
     await update_sub.save()
-    return await Subscription_Raw.from_tortoise_orm(update_sub)
+    return await Subscription_Raw_Pydantic.from_tortoise_orm(update_sub)
 
 
 @router.delete('/subscription/{uid:uuid}')
