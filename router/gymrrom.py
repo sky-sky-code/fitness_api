@@ -4,8 +4,8 @@ from typing import List
 from fastapi import APIRouter
 
 import models
-from schema import GymRoom_Raw_Pydantic, GymRoom_Pydantic
-from models import GymRoom
+from schema import GymRoom_Raw_Pydantic, GymRoom_Pydantic, GymLesson_Pydantic, GymLesson_Raw_Pydantic
+from models import GymRoom, GymLesson
 
 router = APIRouter(
     tags=['API Gymroom']
@@ -45,3 +45,36 @@ async def gymroom_create(gymroom: GymRoom_Raw_Pydantic):
     gymroom.office_id = get_office.uid
     create_gymroom = await models.GymRoom.create(**gymroom.dict())
     return await GymRoom_Pydantic.from_tortoise_orm(create_gymroom)
+
+
+@router.get('/gymlesson', response_model=List[GymLesson_Pydantic])
+async def get_all_gymlesson():
+    qs_gymlesson = models.GymLesson.all()
+    return await GymLesson_Pydantic.from_queryset(qs_gymlesson)
+
+
+@router.get('/gymlesson/{uid:uuid}', response_model=GymLesson_Pydantic)
+async def get_gymlesson(uid: uuid.UUID):
+    gymleson = await models.GymLesson.get(uid=uid)
+    return await GymLesson_Pydantic.from_tortoise_orm(gymleson)
+
+
+@router.put('/gymlesson/{uid:uuid}', response_model=GymLesson_Pydantic)
+async def update_gymlesson(uid: uuid.UUID, gymlesson: GymLesson_Raw_Pydantic):
+    gymlesson_get = await models.GymLesson.get(uid=uid)
+    gymlesson = await gymlesson_get.update_from_dict(gymlesson.dict())
+    await gymlesson.save()
+    return await GymLesson_Pydantic.from_tortoise_orm(gymlesson)
+
+
+@router.delete('/gymlesson/{uid:uuid}')
+async def delete_gymlesson(uid: uuid.UUID):
+    gymlesson = await models.GymLesson.get(uid=uid)
+    await gymlesson.delete()
+    return {'msg': f'GymLesson {gymlesson.name} delete successful'}
+
+
+@router.post('/gymlesson', response_model=GymLesson_Pydantic)
+async def create_gymlesson(gymlesson: GymLesson_Raw_Pydantic):
+    gymlesson = await models.GymLesson.create(**gymlesson.dict())
+    return await GymLesson_Pydantic.from_tortoise_orm(gymlesson)
