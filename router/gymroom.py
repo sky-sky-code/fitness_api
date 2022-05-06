@@ -21,7 +21,7 @@ async def gymroom_all():
 @router.get('/gymroom/{uid:uuid}', response_model=GymRoom_Pydantic)
 async def get_one_gymroom(uid: uuid.UUID):
     get_gym = await GymRoom.get(uid=uid)
-    return await GymRoom_Pydantic.from_queryset(get_gym)
+    return await GymRoom_Pydantic.from_tortoise_orm(get_gym)
 
 
 @router.put('/gymroom/{uid:uuid}', response_model=GymRoom_Pydantic)
