@@ -24,7 +24,9 @@ async def get_one_subscription(uid: uuid.UUID):
 
 @router.post('/subscription', response_model=Subscription_Raw_Pydantic)
 async def create_subscription(subscription: Subscription_Raw_Pydantic):
-    create_sub = await models.Subscription.create(**subscription.dict())
+    subscription = subscription.dict()
+    subscription['uid'] = uuid.uuid4()
+    create_sub = await models.Subscription.create(**subscription)
     return await Subscription_Raw_Pydantic.from_tortoise_orm(create_sub)
 
 
