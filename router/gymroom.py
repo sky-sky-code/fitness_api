@@ -76,5 +76,7 @@ async def delete_gymlesson(uid: uuid.UUID):
 
 @router.post('/gymlesson', response_model=GymLesson_Pydantic)
 async def create_gymlesson(gymlesson: GymLesson_Raw_Pydantic):
-    gymlesson = await models.GymLesson.create(**gymlesson.dict())
+    gymlesson = gymlesson.dict()
+    gymlesson['uid'] = uuid.uuid4()
+    gymlesson = await models.GymLesson.create(**gymlesson)
     return await GymLesson_Pydantic.from_tortoise_orm(gymlesson)
