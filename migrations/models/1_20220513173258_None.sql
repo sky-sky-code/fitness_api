@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS "profile" (
     "phone" VARCHAR(20),
     "email" VARCHAR(512),
     "is_staff" BOOL NOT NULL  DEFAULT False,
-    "trainer_id" UUID NOT NULL UNIQUE REFERENCES "trainer" ("uid") ON DELETE CASCADE
+    "trainer_id" UUID  UNIQUE REFERENCES "trainer" ("uid") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "purchasedsubscription" (
     "uid" UUID NOT NULL  PRIMARY KEY,

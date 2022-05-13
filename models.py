@@ -16,7 +16,8 @@ class Trainer(User):
 
 
 class Profile(User):
-    trainer: fields.OneToOneRelation[Trainer] = fields.OneToOneField('models.Trainer', on_delete=fields.CASCADE)
+    trainer: fields.OneToOneRelation[Trainer] = fields.OneToOneField('models.Trainer', on_delete=fields.CASCADE,
+                                                                     blank=True, null=True)
 
 
 class Office(Model):
