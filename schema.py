@@ -1,6 +1,6 @@
 from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise.contrib.pydantic.creator import PydanticMeta
-from models import Office, GymRoom, Subscription, GymLesson,Profile
+from models import Office, GymRoom, Subscription, GymLesson, Profile, PurchasedSubscription
 
 Office_Pydantic = pydantic_model_creator(Office, name='Office')
 Office_Raw_Pydantic = pydantic_model_creator(Office, name='Office_Raw', exclude_readonly=True)
@@ -21,6 +21,17 @@ Subscription_Without_Purchased_Pydantic = pydantic_model_creator(Subscription, n
                                                                  meta_override=Subscription_Without_Purchased)
 Subscription_Raw_Pydantic = pydantic_model_creator(Subscription, name='Subscription_Raw', exclude_readonly=True)
 
-
 Profile_Pydantic = pydantic_model_creator(Profile, name='Client')
 Profile_Raw_Pydantic = pydantic_model_creator(Profile, name='Profile', exclude_readonly=True)
+
+PurchasedSubscription_Pydantic = pydantic_model_creator(PurchasedSubscription, name='PurchasedSubscription')
+
+
+class PurchasedSubscription_Without_ClientID(PydanticMeta):
+    exclude = ('client_id', 'date_sale', 'date_endings',)
+
+
+PurchasedSubscription_Raw_Pydantic = pydantic_model_creator(PurchasedSubscription,
+                                                            name='PurchasedSubscription_Raw',
+                                                            exclude_readonly=True,
+                                                            meta_override=PurchasedSubscription_Without_ClientID)

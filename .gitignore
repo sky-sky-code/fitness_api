@@ -213,3 +213,4 @@ dmypy.json
 cython_debug/
 
 /upload/
+/aerich_command.py

@@ -1,7 +1,8 @@
 import uuid
 from enum import Enum
+from datetime import datetime
 
-from tortoise import Tortoise, Model, fields, run_async
+from tortoise import Tortoise, Model, fields
 
 import settings
 from mixins import User
@@ -59,12 +60,12 @@ class Subscription(Model):
     quantity_gym_lesson = fields.IntField()
     quantity_day = fields.IntField()
     price = fields.IntField()
-    description = fields.TextField()
+    description = fields.TextField(blank=True, null=True)
 
 
 class PurchasedSubscription(Model):
     uid = fields.UUIDField(default=uuid.uuid4(), pk=True)
-    date_sale = fields.DateField(auto_now_add=True)
+    date_sale = fields.DateField(default=datetime.now())
     subscription: fields.ForeignKeyRelation[Subscription] = fields.ForeignKeyField('models.Subscription',
                                                                                    on_delete=fields.RESTRICT)
     date_activation = fields.DateField()
