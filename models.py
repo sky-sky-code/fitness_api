@@ -74,4 +74,18 @@ class PurchasedSubscription(Model):
     client: fields.ForeignKeyRelation[Profile] = fields.ForeignKeyField('models.Profile')
 
 
+class Service(Model):
+    uid = fields.UUIDField(default=uuid.uuid4(), pk=True)
+    name = fields.CharField(max_length=512)
+    price = fields.IntField()
+    description = fields.TextField(blank=True, null=True)
+
+
+class PurchasedService(Model):
+    uid = fields.UUIDField(default=uuid.uuid4(), pk=True)
+    date_sale = fields.DateField(default=datetime.now())
+    service: fields.ForeignKeyRelation[Service] = fields.ForeignKeyField('models.Service', on_delete=fields.RESTRICT)
+    client: fields.ForeignKeyRelation[Profile] = fields.ForeignKeyField('models.Profile')
+
+
 Tortoise.init_models(['models'], 'models')

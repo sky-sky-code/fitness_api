@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi import APIRouter
-from schema import Subscription_Without_Purchased_Pydantic, Subscription_Raw_Pydantic
+from schema import Subscription_Without_Purchased_Pydantic, Subscription_Raw_Pydantic, PurchasedSubscription_Pydantic
 import models
 from typing import List
 
@@ -14,6 +14,12 @@ router = APIRouter(
 async def get_subscription():
     qs_sub = models.Subscription.all()
     return await Subscription_Without_Purchased_Pydantic.from_queryset(qs_sub)
+
+
+@router.get('/subscription/purchased', response_model=List[PurchasedSubscription_Pydantic])
+async def all_purchased_subscription():
+    qs_ps = models.PurchasedSubscription.all()
+    return await PurchasedSubscription_Pydantic.from_queryset(qs_ps)
 
 
 @router.get('/subscription/{uid:uuid}', response_model=Subscription_Without_Purchased_Pydantic)
