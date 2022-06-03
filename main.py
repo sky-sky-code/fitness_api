@@ -3,7 +3,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from fastapi.middleware.cors import CORSMiddleware
 
 from settings import TORTOISE_ORM
-from router import office, gymroom, subscriprion, client
+from router import office, gymroom, subscriprion, client, service
 
 app = FastAPI(description='API FOR CRM')
 
@@ -25,3 +25,4 @@ app.include_router(office.router)
 app.include_router(gymroom.router)
 app.include_router(subscriprion.router)
 app.include_router(client.router)
+app.include_router(service.router)
