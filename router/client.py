@@ -75,16 +75,3 @@ async def delete_client_subscription(uid: uuid.UUID):
 async def get_one_client_subscription(uid: uuid.UUID):
     get_obj = await models.PurchasedSubscription.get(uid=uid)
     return await PurchasedSubscription_Pydantic.from_tortoise_orm(get_obj)
-
-
-# @router.put('/client/purchased/subscription/{uid:uuid}', response_model=PurchasedSubscription_Pydantic)
-# async def update_client_subscription(uid: uuid.UUID, ps: PurchasedSubscription_Raw_Pydantic):
-#     get_obj = await models.PurchasedSubscription.get(uid=uid)
-#     ps_dct = ps.dict()
-#     old_sub = await get_obj.subscription
-#     if ps_dct['subscription_id'] != old_sub.uid:
-#         ps_dct['date_endings'] = ps_dct['date_activation'] + timedelta(old_sub.quantity_day)
-#         ps_dct['date_sale'] = datetime.now()
-#     update_obj = get_obj.update_from_dict(ps_dct)
-#     await update_obj.save()
-#     return await PurchasedSubscription_Raw_Pydantic(update_obj)
