@@ -49,8 +49,8 @@ async def gymroom_create(gymroom: GymRoom_Raw_Pydantic):
 
 
 @router.get('/gymlesson', response_model=List[GymLesson_Pydantic])
-async def get_all_gymlesson(name: Optional[str] = None, duration: Optional[str] = None, type_value: Optional[str] = None):
-    data_gymlesson = await filter_qs(models.GymLesson, GymLesson_Pydantic, name=name, duration=duration, type=type_value)
+async def get_all_gymlesson(name: Optional[str] = None, duration: Optional[str] = None, type: Optional[str] = None):
+    data_gymlesson = await filter_qs(models.GymLesson, GymLesson_Pydantic, name=name, duration=duration, type=type)
     return data_gymlesson
 
 

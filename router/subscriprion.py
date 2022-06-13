@@ -13,10 +13,11 @@ router = APIRouter(
 
 @router.get('/subscription', response_model=List[Subscription_Without_Purchased_Pydantic])
 async def get_subscription(name: Optional[str] = None, gym_lesson: Optional[uuid.UUID] = None,
-                           quantity_gym_lesson: Optional[int] = None, quantity_day: Optional[int] = None):
+                           quantity_gym_lesson: Optional[int] = None, quantity_day: Optional[int] = None,
+                           price: Optional[int] = None):
     data_subscription = await filter_qs(models.Subscription, Subscription_Without_Purchased_Pydantic, name=name,
                                         gym_lesson=gym_lesson, quantity_gym_lesson=quantity_gym_lesson,
-                                        quantity_day=quantity_day)
+                                        quantity_day=quantity_day, price=price)
     return data_subscription
 
 
