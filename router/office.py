@@ -1,9 +1,10 @@
 import uuid
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter
 
 import models
+from filter import filter_qs
 from schema import Office_Pydantic, Office_Raw_Pydantic
 from models import Office
 
@@ -13,9 +14,9 @@ router = APIRouter(
 
 
 @router.get('/office', response_model=List[Office_Pydantic])
-async def office_all():
-    get_all_office = Office.all()
-    return await Office_Pydantic.from_queryset(get_all_office)
+async def office_all(name: Optional[str] = None, address: Optional[str] = None, phone: Optional[str] = None):
+    data_office = await filter_qs(models.Office, Office_Pydantic, name=name, address=address, phone=phone)
+    return data_office
 
 
 @router.get('/office/{uid:uuid}', response_model=Office_Pydantic)

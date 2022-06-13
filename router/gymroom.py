@@ -1,9 +1,10 @@
 import uuid
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter
 
 import models
+from filter import filter_qs
 from schema import GymRoom_Raw_Pydantic, GymRoom_Pydantic, GymLesson_Pydantic, GymLesson_Raw_Pydantic
 from models import GymRoom, GymLesson
 
@@ -13,9 +14,9 @@ router = APIRouter(
 
 
 @router.get('/gymroom', response_model=List[GymRoom_Pydantic])
-async def gymroom_all():
-    get_gym_all = GymRoom.all()
-    return await GymRoom_Pydantic.from_queryset(get_gym_all)
+async def gymroom_all(name: Optional[str] = None, office: Optional[uuid.UUID] = None):
+    data_gymroom = await filter_qs(models.GymRoom, GymRoom_Pydantic, name=name, office_id=office)
+    return data_gymroom
 
 
 @router.get('/gymroom/{uid:uuid}', response_model=GymRoom_Pydantic)
@@ -48,9 +49,9 @@ async def gymroom_create(gymroom: GymRoom_Raw_Pydantic):
 
 
 @router.get('/gymlesson', response_model=List[GymLesson_Pydantic])
-async def get_all_gymlesson():
-    qs_gymlesson = models.GymLesson.all()
-    return await GymLesson_Pydantic.from_queryset(qs_gymlesson)
+async def get_all_gymlesson(name: Optional[str] = None, duration: Optional[str] = None, type_value: Optional[str] = None):
+    data_gymlesson = await filter_qs(models.GymLesson, GymLesson_Pydantic, name=name, duration=duration, type=type_value)
+    return data_gymlesson
 
 
 @router.get('/gymlesson/{uid:uuid}', response_model=GymLesson_Pydantic)

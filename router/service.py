@@ -1,7 +1,8 @@
 import uuid
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter
+from filter import filter_qs
 from schema import Service_Pydantic, Service_Raw_Pydantic
 import models
 
@@ -11,9 +12,9 @@ router = APIRouter(
 
 
 @router.get('/service', response_model=List[Service_Pydantic])
-async def get_service():
-    get_qs = models.Service.all()
-    return await Service_Pydantic.from_queryset(get_qs)
+async def get_service(name: Optional[str] = None, price: Optional[int] = None):
+    data_service = await filter_qs(models.Service, Service_Pydantic, name=name, price=price)
+    return data_service
 
 
 @router.post('/service', response_model=Service_Pydantic)

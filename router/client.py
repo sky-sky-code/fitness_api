@@ -1,9 +1,10 @@
 import uuid
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter
 import models
+from filter import filter_qs
 from schema import Profile_Pydantic, Profile_Raw_Pydantic, \
     PurchasedSubscription_Pydantic, PurchasedSubscription_Raw_Pydantic
 
@@ -13,9 +14,11 @@ router = APIRouter(
 
 
 @router.get('/client', response_model=List[Profile_Pydantic])
-async def get_client():
-    clients = models.Profile.all()
-    return await Profile_Pydantic.from_queryset(clients)
+async def get_client(name: Optional[str] = None, surname: Optional[str] = None,
+                     pat_name: Optional[str] = None, phone: Optional[str] = None, email: Optional[str] = None):
+    data_clients = await filter_qs(models.Profile, Profile_Pydantic,
+                                   name=name, surname=surname, pat_name=pat_name, phone=phone, email=email)
+    return data_clients
 
 
 @router.post('/client', response_model=Profile_Pydantic)
@@ -59,7 +62,8 @@ async def create_client_subscription(uid: uuid.UUID, purchased_sub: PurchasedSub
     subscription_quantity_day = await models.Subscription.get(uid=purchased_sub_dct['subscription_id'])
     purchased_sub_dct['uid'] = uuid.uuid4()
     purchased_sub_dct['client_id'] = uid
-    purchased_sub_dct['date_endings'] = purchased_sub_dct['date_activation'] + timedelta(subscription_quantity_day.quantity_day)
+    purchased_sub_dct['date_endings'] = purchased_sub_dct['date_activation'] + timedelta(
+        subscription_quantity_day.quantity_day)
     get_create_obj = await models.PurchasedSubscription.create(**purchased_sub_dct)
     return await PurchasedSubscription_Pydantic.from_tortoise_orm(get_create_obj)
 
